@@ -1,0 +1,4 @@
+{"type":"thread.started","thread_id":"019ede31-0000-7000-8000-000000000401"}
+{"type":"turn.started"}
+{"type":"error","message":"{\"type\":\"error\",\"status\":401,\"error\":{\"type\":\"authentication_error\",\"message\":\"Invalid credentials. Please sign in again.\"}}"}
+{"type":"turn.failed","error":{"message":"{\"type\":\"error\",\"status\":401,\"error\":{\"type\":\"authentication_error\",\"message\":\"Invalid credentials. Please sign in again.\"}}"}}

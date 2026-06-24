@@ -1,0 +1,4 @@
+{"type":"thread.started","thread_id":"019ede1f-be60-7fd0-8180-3890a82c6c40"}
+{"type":"turn.started"}
+{"type":"item.completed","item":{"id":"item_0","type":"agent_message","text":"codex-live-ok"}}
+{"type":"turn.completed","usage":{"input_tokens":15858,"cached_input_tokens":2432,"output_tokens":19,"reasoning_output_tokens":9}}

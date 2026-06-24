@@ -1,0 +1,9 @@
+{"type":"thread.started","thread_id":"019ede47-da67-73a0-9256-e620b84ca7b1"}
+{"type":"turn.started"}
+{"type":"item.completed","item":{"id":"item_0","type":"agent_message","text":"I’ll create the file in the current workspace, then read it back to verify the exact contents."}}
+{"type":"item.started","item":{"id":"item_1","type":"file_change","changes":[{"path":"/var/folders/jw/993j6c6n7f9_n6nsvp9wxrjw0000gn/T/tmp.udJpEWl7ta/proof.txt","kind":"add"}],"status":"in_progress"}}
+{"type":"item.completed","item":{"id":"item_1","type":"file_change","changes":[{"path":"/var/folders/jw/993j6c6n7f9_n6nsvp9wxrjw0000gn/T/tmp.udJpEWl7ta/proof.txt","kind":"add"}],"status":"completed"}}
+{"type":"item.started","item":{"id":"item_2","type":"command_execution","command":"/bin/zsh -lc 'cat proof.txt'","aggregated_output":"","exit_code":null,"status":"in_progress"}}
+{"type":"item.completed","item":{"id":"item_2","type":"command_execution","command":"/bin/zsh -lc 'cat proof.txt'","aggregated_output":"NONCE123\n","exit_code":0,"status":"completed"}}
+{"type":"item.completed","item":{"id":"item_3","type":"agent_message","text":"Created [proof.txt](/var/folders/jw/993j6c6n7f9_n6nsvp9wxrjw0000gn/T/tmp.udJpEWl7ta/proof.txt) and read it back:\n\n```text\nNONCE123\n```"}}
+{"type":"turn.completed","usage":{"input_tokens":38463,"cached_input_tokens":27776,"output_tokens":194,"reasoning_output_tokens":0}}

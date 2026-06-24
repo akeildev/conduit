@@ -1,0 +1,9 @@
+node_modules/
+.DS_Store
+*.log
+
+# web (Next.js)
+web/.next/
+web/out/
+web/node_modules/
+.vercel

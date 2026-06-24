@@ -1,0 +1,39 @@
+{
+  "name": "conduit-runtime",
+  "version": "0.1.0",
+  "description": "Subscription as a Runtime — turn any agent CLI (Claude, Codex, your own) into a normalized streaming runtime. Bring your own CLI by config, not code.",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=23.6.0"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": [
+    "src",
+    "conduit.clis.json",
+    "docs",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test test/*.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "cli",
+    "agent",
+    "runtime",
+    "claude",
+    "codex",
+    "bring-your-own-cli",
+    "subscription-as-a-runtime",
+    "streaming",
+    "canonical-events"
+  ],
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "@types/node": "^22.0.0"
+  }
+}
