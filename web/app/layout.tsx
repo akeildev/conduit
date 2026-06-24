@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   title: "Conduit — Subscription as a Runtime",
   description:
     "Turn any agent CLI you already pay for — Claude, Codex, your own — into the engine that powers an app. Bring your own CLI by config, not code.",
-  metadataBase: new URL("https://conduit-runtime.vercel.app"),
+  metadataBase: new URL("https://conduit-six-kappa.vercel.app"),
   openGraph: {
     title: "Conduit — Subscription as a Runtime",
     description:
