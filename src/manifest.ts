@@ -2,9 +2,10 @@
  * conduit/manifest.ts — "Subscription as a Runtime": load + register BYO-CLI specs.
  *
  * Conduit is the runtime that turns ANY agent CLI a user already pays for (their
- * Claude / Codex / other subscription) into the engine that drives the app. The
- * built-in providers (claude, codex, hermes) are hand-written; this module is the
- * CONFIG path: a `ConduitManifest` is a JSON document listing {@link GenericCliSpec}s,
+ * Claude / Codex / other subscription) into the engine that drives the app. This
+ * standalone package ships ONE hand-written built-in adapter (codex) as a worked
+ * reference; this module is the CONFIG path: a `ConduitManifest` is a JSON document
+ * listing {@link GenericCliSpec}s,
  * and registering it brings each CLI online via `defineGenericCli` + `registerProvider`
  * — no code change, no rebuild.
  *

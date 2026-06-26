@@ -1,5 +1,4 @@
 {
-  "$schema": "./conduit.clis.schema.json",
   "$comment": "Conduit manifest — 'Subscription as a Runtime'. Each entry brings ONE agent CLI online declaratively (no code change) via defineGenericCli + registerProvider. The Basics analog of the studied reference's cli-deps.json, EXTENDED with the line->canonical PARSE mapping (`mapping`). Conduit resolves each `binary` off the user's login-shell PATH (BYO = the user's own already-installed, already-signed-in subscription CLI); pinning/bundling (download URL + sha256 + per-arch staging) is a host/installer concern, not carried here. Load with: loadCliManifestFile('engine/conduit.clis.json').",
   "version": 1,
   "clis": [

@@ -6,6 +6,12 @@ authored in. In THIS standalone repo the mapping is:
   packages/protocol/src/<x>.ts         → src/<x>.ts
   engine/test/conduit_generic.test.ts  → test/conduit_generic.test.ts
   engine/conduit.clis.json             → conduit.clis.json
+
+  IMPORTANT: this standalone package ships ONLY ONE hand-written adapter — `src/codex.ts`.
+  References below to `claude.ts` / `hermes.ts` and to `parseClaude` / `StreamAccumulator`
+  describe the FULL Basics engine these were extracted from; they are NOT present in this
+  repo. Use `src/codex.ts` as the worked hand-written reference, and `defineGenericCli`
+  (Path A) to bring Claude or any other JSONL CLI online here.
 -->
 
 # Conduit — Subscription as a Runtime

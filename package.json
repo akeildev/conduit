@@ -5,19 +5,28 @@
   "type": "module",
   "license": "MIT",
   "engines": {
-    "node": ">=23.6.0"
+    "node": ">=18.18.0"
   },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
   },
   "files": [
-    "src",
+    "dist",
     "conduit.clis.json",
     "docs",
     "README.md",
     "LICENSE"
   ],
   "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "clean": "rm -rf dist",
+    "prepack": "npm run clean && npm run build",
     "test": "node --test test/*.test.ts",
     "typecheck": "tsc --noEmit"
   },

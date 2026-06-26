@@ -138,6 +138,21 @@ build/extend guide is [`docs/CONDUIT.md`](docs/CONDUIT.md).
 
 ---
 
+## Repo layout
+
+| Path | What |
+|---|---|
+| `src/` | the runtime kernel (the published package — compiled to `dist/` on `prepack`) |
+| `test/` | the test suite + real Codex fixtures |
+| `docs/` | the understanding doc + build/extend guide |
+| `web/` | the marketing/landing site (Next.js) — **not** part of the runtime kernel; deployed separately |
+
+> Published artifact: the package ships compiled **`dist/` (`.js` + `.d.ts`)**, so it
+> imports by bare specifier on Node ≥ 18.18 (`import { getAdapter } from "conduit-runtime"`).
+> The repo dev flow runs the `.ts` sources directly on Node ≥ 23.6.
+
+---
+
 ## License
 
 MIT © akeildev

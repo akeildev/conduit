@@ -539,6 +539,15 @@ function parseItemCompleted(
         "";
       return [makeEvent("thinking", ctx, { text })];
     }
+    case "error": {
+      // A NON-FATAL codex warning, e.g. "Model metadata for `x` not found. Defaulting to
+      // fallback ...". Surface the real human message as a system_message rather than the
+      // internal "[unmapped ...]" marker (the fatal error path is the native `error` +
+      // `turn.failed` pair, which still maps to a typed provider_error).
+      const text =
+        (typeof item?.message === "string" ? item.message : undefined) ?? "[codex warning]";
+      return [makeEvent("system_message", ctx, { text })];
+    }
     default:
       return [
         makeEvent("system_message", ctx, {
