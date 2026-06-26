@@ -4,6 +4,15 @@
   "description": "Subscription as a Runtime — turn any agent CLI (Claude, Codex, your own) into a normalized streaming runtime. Bring your own CLI by config, not code.",
   "type": "module",
   "license": "MIT",
+  "author": "akeildev",
+  "homepage": "https://github.com/akeildev/conduit#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/akeildev/conduit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/akeildev/conduit/issues"
+  },
   "engines": {
     "node": ">=18.18.0"
   },
