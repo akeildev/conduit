@@ -28,27 +28,10 @@
   --maxw: 1080px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: oklch(0.155 0 0);
-    --foreground: oklch(0.985 0 0);
-    --card: oklch(0.205 0 0);
-    --muted: oklch(0.235 0 0);
-    --muted-2: oklch(0.215 0 0);
-    --muted-foreground: oklch(0.70 0 0);
-    --border: oklch(1 0 0 / 0.10);
-    --accent-wash: oklch(0.265 0 0);
-    --brand: oklch(0.72 0.16 277);
-    --brand-foreground: oklch(0.16 0.02 277);
-    --brand-soft: oklch(0.72 0.16 277 / 0.16);
-    --shadow-sm: 0 1px 3px 0 oklch(0 0 0 / 0.3);
-    --shadow: 0 8px 24px -8px oklch(0 0 0 / 0.5);
-    --shadow-lg: 0 24px 54px -16px oklch(0 0 0 / 0.6);
-  }
-}
+/* Light-only by design — clean YC look, never auto-switches to a heavy dark theme. */
 
 * { box-sizing: border-box; min-width: 0; }
-html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; color-scheme: light; }
 body {
   margin: 0;
   background: var(--background);
