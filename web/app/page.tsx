@@ -9,20 +9,32 @@ function GitHubMark() {
   );
 }
 
+function Icon({ d }: { d: string }) {
+  return (
+    <svg className="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      {d.split("|").map((p, i) => <path key={i} d={p} />)}
+    </svg>
+  );
+}
+
+const BENEFITS = [
+  { t: "No API keys to wire up", d: "It uses the CLI you've already installed and signed into. Nothing new to provision.", ic: "M7 11V7a5 5 0 0 1 10 0v4|M5 11h14v10H5z" },
+  { t: "Use what you already pay for", d: "Your Claude or Codex subscription becomes the backend. No separate per-token API bill.", ic: "M3 7h18v10H3z|M3 11h18|M7 15h2" },
+  { t: "One format, any CLI", d: "Swap Claude for Codex without touching your app — both stream the exact same event shape.", ic: "M4 7h11l-3-3|M20 17H9l3 3" },
+  { t: "Typed events, not raw text", d: "You read clean objects — assistant text, tool calls, a final result, typed errors. Never raw stdout.", ic: "M4 6h16|M4 12h10|M4 18h7" },
+  { t: "Bring your own CLI", d: "Add a new CLI with a small config file. No new adapter code, no rebuild.", ic: "M12 5v14|M5 12h14" },
+  { t: "Zero deps, MIT, readable", d: "One small library, no dependencies, source you can read in an afternoon.", ic: "M9 18l6-6-6-6" },
+];
+
 export default function Home() {
   return (
     <>
       <nav className="nav">
         <div className="wrap nav-inner">
-          <div className="brandmark">
-            <span className="logo-dot" aria-hidden />
-            Conduit
-          </div>
+          <div className="brandmark"><span className="logo-dot" aria-hidden /> Conduit</div>
           <div className="nav-links">
             <a className="btn btn-ghost btn-sm" href={DOCS}>Docs</a>
-            <a className="btn btn-primary btn-sm" href={REPO}>
-              <GitHubMark /> GitHub
-            </a>
+            <a className="btn btn-primary btn-sm" href={REPO}><GitHubMark /> GitHub</a>
           </div>
         </div>
       </nav>
@@ -31,165 +43,137 @@ export default function Home() {
         {/* Hero */}
         <header className="hero">
           <div className="wrap">
-            <span className="eyebrow">Subscription as a Runtime</span>
-            <h1 className="h1">Your subscription<br />is the runtime.</h1>
+            <span className="pill"><span className="dot" /> Open source · MIT · zero dependencies</span>
+            <h1 className="h1">Build on the AI subscription<br /><span className="accent">you already pay for.</span></h1>
             <p className="lede">
-              You already pay for a coding-agent CLI. Conduit treats that subscription as a
-              runtime — it spawns the CLI, normalizes its native output into one canonical
-              event stream, and hands it to your app like an API.
+              Conduit turns the Claude or Codex CLI already on your machine into a streaming
+              backend for your app — one clean event stream, no API keys, no per-token bill.
             </p>
-            <div style={{ display: "flex", gap: 12, marginTop: 32, flexWrap: "wrap" }}>
-              <a className="btn btn-primary" href={REPO}><GitHubMark /> View on GitHub</a>
-              <a className="btn btn-ghost" href={DOCS}>Read the docs →</a>
+            <div className="cta-row">
+              <a className="btn btn-primary" href={REPO}><GitHubMark /> Get started</a>
+              <a className="btn btn-ghost" href={DOCS}>Read the docs</a>
             </div>
+            <p className="trust">Works with <b>Claude Code</b>, <b>Codex</b>, or any CLI that prints JSON.</p>
 
-            <div className="flow" aria-label="bring your own CLI to your app through Conduit">
-              <div className="flow-node">
-                <div className="flow-k">Bring your own CLI</div>
-                <div className="flow-v">claude · codex</div>
-                <div className="flow-sub">…or any JSONL CLI</div>
-              </div>
-              <div className="flow-arrow">→</div>
-              <div className="flow-node is-brand">
-                <div className="flow-k">Conduit</div>
-                <div className="flow-v">the runtime</div>
-                <div className="flow-sub">spawn · normalize · stream</div>
-              </div>
-              <div className="flow-arrow">→</div>
-              <div className="flow-node">
-                <div className="flow-k">One canonical stream</div>
-                <div className="flow-v">typed events</div>
-                <div className="flow-sub">one renderer, typed errors</div>
-              </div>
-              <div className="flow-arrow">→</div>
-              <div className="flow-node">
-                <div className="flow-k">Your app</div>
-                <div className="flow-v">like an API</div>
-                <div className="flow-sub">HTTP + WS ready</div>
-              </div>
+            <div className="code hero-code">
+              <div className="code-bar"><span className="tl" /><span className="tl" /><span className="tl" /><span className="fname">app.ts</span></div>
+              <pre>
+{`import { getAdapter } from `}<span className="s">&quot;conduit-runtime&quot;</span>{`;
+
+`}<span className="c">// the CLI you already have — no API key</span>{`
+`}<span className="k">const</span>{` codex = getAdapter(`}<span className="s">&quot;codex&quot;</span>{`);
+`}<span className="k">const</span>{` turn  = `}<span className="k">await</span>{` codex.spawn({ prompt: `}<span className="s">&quot;summarize this repo&quot;</span>{`, cwd: `}<span className="s">&quot;.&quot;</span>{` });
+
+`}<span className="c">// one clean stream, whatever CLI is underneath</span>{`
+`}<span className="k">for await</span>{` (`}<span className="k">const</span>{` event `}<span className="k">of</span>{` codex.readEvents(turn, ctx)) {
+  console.log(event.kind); `}<span className="c">// assistant_text · tool_call · final_result</span>{`
+}`}
+              </pre>
             </div>
           </div>
         </header>
 
-        {/* Two ways */}
-        <section className="section">
+        {/* Why */}
+        <section className="section bordered">
+          <div className="wrap section-head">
+            <span className="eyebrow">Why Conduit</span>
+            <h2 className="h2">Adding AI to an app is more plumbing than it should be.</h2>
+            <p className="lede">
+              The usual path means API keys, a per-token bill, and a different SDK for every model.
+              But you already pay for a coding-agent CLI sitting right there on your machine.
+              Conduit lets your app run on that — and gives you one tidy stream to build against.
+            </p>
+          </div>
+        </section>
+
+        {/* How it works */}
+        <section className="section bordered">
           <div className="wrap">
             <div className="section-head">
-              <span className="eyebrow">Two ways in</span>
-              <h2 className="h2">Bring your own CLI — by config, not code.</h2>
+              <span className="eyebrow">How it works</span>
+              <h2 className="h2">Three steps. No magic.</h2>
+            </div>
+            <div className="steps">
+              <div className="step">
+                <div className="n">1</div>
+                <h3>Point it at your CLI</h3>
+                <p>Tell Conduit to use <code>claude</code>, <code>codex</code>, or any CLI that streams JSON. It finds the binary on your PATH.</p>
+              </div>
+              <div className="step">
+                <div className="n">2</div>
+                <h3>It runs &amp; translates</h3>
+                <p>Conduit spawns the CLI for each turn and converts its native output into one simple, typed event stream.</p>
+              </div>
+              <div className="step">
+                <div className="n">3</div>
+                <h3>Your app reads the stream</h3>
+                <p>You loop over clean events — text, tool calls, the final result. Same shape no matter which CLI ran.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Benefits */}
+        <section className="section bordered">
+          <div className="wrap">
+            <div className="section-head">
+              <span className="eyebrow">For everyday devs</span>
+              <h2 className="h2">What you actually get.</h2>
+            </div>
+            <div className="benefits">
+              {BENEFITS.map((b) => (
+                <div className="benefit" key={b.t}>
+                  <Icon d={b.ic} />
+                  <h3>{b.t}</h3>
+                  <p>{b.d}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Bring your own CLI */}
+        <section className="section bordered">
+          <div className="wrap split">
+            <div className="split-text">
+              <span className="eyebrow">Bring your own CLI</span>
+              <h2 className="h2">A new CLI is a config file, not a code change.</h2>
               <p className="lede">
-                Most runtimes make you hand-write a new adapter per CLI. Conduit makes the
-                common case a declarative spec — and keeps the escape hatch for the rest.
+                If a CLI prints line-by-line JSON, describe how to run it and how to read its
+                output. Register it, and your app drives it like any other — same event stream,
+                no adapter to write.
               </p>
             </div>
-            <div className="grid grid-2">
-              <div className="card">
-                <span className="chip">No code</span>
-                <h3>A GenericCliSpec</h3>
-                <p>
-                  If the CLI prints line-delimited JSON, describe how to run it and how to map
-                  its lines to canonical events. That&apos;s the whole adapter — declare it in a
-                  manifest and register it at runtime.
-                </p>
-              </div>
-              <div className="card">
-                <span className="chip neutral">When you need it</span>
-                <h3>A hand-written adapter</h3>
-                <p>
-                  For CLIs that need real logic — streaming-delta accumulation, JSON-RPC over
-                  stdio, computed fields — implement the small <code>ProviderAdapter</code>
-                  contract. A Codex adapter ships as a worked reference.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Code + proof */}
-        <section className="section">
-          <div className="wrap split">
-            <div>
-              <span className="eyebrow">The spec</span>
-              <h2 className="h2" style={{ marginBottom: 18 }}>One object brings a CLI online.</h2>
-              <div className="code">
-                <div className="code-bar"><span className="fname">byo.ts</span></div>
-                <pre>
+            <div className="code">
+              <div className="code-bar"><span className="tl" /><span className="tl" /><span className="tl" /><span className="fname">my-cli.ts</span></div>
+              <pre>
 {`registerProvider(defineGenericCli({
-  `}<span className="t-key">id</span>{`: `}<span className="t-str">&quot;mycli&quot;</span>{`,
-  `}<span className="t-key">binary</span>{`: `}<span className="t-str">&quot;mycli&quot;</span>{`,
-  `}<span className="t-key">argv</span>{`: { flags: [`}<span className="t-str">&quot;--stream&quot;</span>{`], prompt: { mode: `}<span className="t-str">&quot;positional&quot;</span>{` } },
-  `}<span className="t-key">mapping</span>{`: { rules: [
-    { match: [{ field: `}<span className="t-str">&quot;type&quot;</span>{`, equals: `}<span className="t-str">&quot;text&quot;</span>{` }],
-      emit: [{ kind: `}<span className="t-str">&quot;assistant_text&quot;</span>{`,
-        fields: { text: { path: `}<span className="t-str">&quot;content&quot;</span>{` } } }] },
-    { match: [{ field: `}<span className="t-str">&quot;type&quot;</span>{`, equals: `}<span className="t-str">&quot;done&quot;</span>{` }],
-      emit: [{ kind: `}<span className="t-str">&quot;final_result&quot;</span>{` }] },
+  `}<span className="k">id</span>{`: `}<span className="s">&quot;mycli&quot;</span>{`,
+  `}<span className="k">binary</span>{`: `}<span className="s">&quot;mycli&quot;</span>{`,
+  `}<span className="k">argv</span>{`: { flags: [`}<span className="s">&quot;--stream&quot;</span>{`], prompt: { mode: `}<span className="s">&quot;positional&quot;</span>{` } },
+  `}<span className="k">mapping</span>{`: { rules: [
+    { match: [{ field: `}<span className="s">&quot;type&quot;</span>{`, equals: `}<span className="s">&quot;text&quot;</span>{` }],
+      emit: [{ kind: `}<span className="s">&quot;assistant_text&quot;</span>{`,
+        fields: { text: { path: `}<span className="s">&quot;content&quot;</span>{` } } }] },
   ] },
 }));`}
-                </pre>
-              </div>
-            </div>
-
-            <div>
-              <span className="eyebrow">The proof</span>
-              <h2 className="h2" style={{ marginBottom: 18 }}>Config reproduces code. Tested.</h2>
-              <div className="proof">
-                <p className="muted" style={{ margin: "0 0 14px", fontSize: 14 }}>
-                  The Codex stream, expressed as a spec, runs over the <em>real</em> Codex
-                  fixtures alongside the hand-written adapter — and yields the same canonical
-                  backbone, kind-for-kind.
-                </p>
-                <div className="proof-line"><span className="tick">✔</span><span>declarative spec yields the SAME backbone as the hand-written codex adapter</span></div>
-                <div className="proof-line"><span className="tick">✔</span><span>error fixtures classify to the right typed errorKind</span></div>
-                <div className="proof-line"><span className="tick">✔</span><span>never throws on garbage · registry + manifest seam</span></div>
-                <div className="metric">
-                  <div><div className="n">14 / 14</div><div className="l">tests pass</div></div>
-                  <div><div className="n">0</div><div className="l">runtime deps</div></div>
-                  <div><div className="n">1</div><div className="l">canonical event type</div></div>
-                </div>
-              </div>
+              </pre>
             </div>
           </div>
         </section>
 
-        {/* Features */}
-        <section className="section">
+        {/* Get started */}
+        <section className="section bordered get">
           <div className="wrap">
-            <div className="section-head">
-              <span className="eyebrow">Why it stays calm</span>
-              <h2 className="h2">One stream. One renderer. Typed everything.</h2>
+            <span className="eyebrow">Get started</span>
+            <h2 className="h2">Up and running in a minute.</h2>
+            <div className="install">
+              <div className="row"><span className="pfx">$</span><span className="cmd">npm install conduit-runtime</span></div>
+              <div className="row"><span className="pfx">$</span><span className="cmd">git clone https://github.com/akeildev/conduit &amp;&amp; cd conduit &amp;&amp; npm test</span></div>
             </div>
-            <div className="grid grid-4">
-              <div className="feat card">
-                <div className="k">Runtime-agnostic UI</div>
-                <div className="v">Claude or Codex or your CLI — one canonical timeline, one renderer. No per-provider branches.</div>
-              </div>
-              <div className="feat card">
-                <div className="k">Typed errors, not stderr</div>
-                <div className="v">Rate-limit, auth, spawn, timeout — every failure normalizes to a typed kind with human copy.</div>
-              </div>
-              <div className="feat card">
-                <div className="k">Never drops, never throws</div>
-                <div className="v">Parsers degrade malformed input to a typed event. Backpressure-ready event classes built in.</div>
-              </div>
-              <div className="feat card">
-                <div className="k">Zero dependencies</div>
-                <div className="v">Runs <code>.ts</code> directly on Node ≥ 23.6 via native type-stripping. Nothing to bundle.</div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* CTA */}
-        <section className="section">
-          <div className="wrap" style={{ textAlign: "center", padding: "8px 0 12px" }}>
-            <span className="eyebrow">Open source · MIT</span>
-            <h2 className="h2" style={{ margin: "14px auto 0", maxWidth: "18ch" }}>
-              Point Conduit at a subscription. Ship.
-            </h2>
-            <div style={{ display: "flex", gap: 12, marginTop: 26, justifyContent: "center", flexWrap: "wrap" }}>
+            <div className="cta-row">
               <a className="btn btn-primary" href={REPO}><GitHubMark /> Star on GitHub</a>
-              <a className="btn btn-ghost" href={DOCS}>Read the docs →</a>
+              <a className="btn btn-ghost" href={DOCS}>Read the docs</a>
             </div>
           </div>
         </section>
@@ -197,10 +181,8 @@ export default function Home() {
 
       <footer className="footer">
         <div className="wrap footer-inner">
-          <div className="brandmark" style={{ fontSize: 14 }}>
-            <span className="logo-dot" aria-hidden /> Conduit
-          </div>
-          <div>Subscription as a Runtime · MIT · <a href={REPO} style={{ color: "var(--brand)" }}>github.com/akeildev/conduit</a></div>
+          <div className="brandmark" style={{ fontSize: 15 }}><span className="logo-dot" aria-hidden /> Conduit</div>
+          <div>Subscription as a Runtime · MIT · <a href={REPO}>github.com/akeildev/conduit</a></div>
         </div>
       </footer>
     </>
