@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "Subscription as a Runtime — turn any agent CLI (Claude, Codex, your own) into a normalized streaming runtime. Bring your own CLI by config, not code.",
   "type": "module",
+  "private": true,
   "license": "MIT",
   "author": "akeildev",
   "homepage": "https://github.com/akeildev/conduit#readme",
@@ -14,28 +15,17 @@
     "url": "https://github.com/akeildev/conduit/issues"
   },
   "engines": {
-    "node": ">=18.18.0"
+    "node": ">=23.6.0"
   },
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "bin": {
+    "conduit": "./bin/conduit.ts"
+  },
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "default": "./dist/index.js"
-    }
+    ".": "./src/index.ts"
   },
-  "files": [
-    "dist",
-    "conduit.clis.json",
-    "docs",
-    "README.md",
-    "LICENSE"
-  ],
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
-    "clean": "rm -rf dist",
-    "prepack": "npm run clean && npm run build",
+    "conduit": "node bin/conduit.ts",
+    "detect": "node bin/conduit.ts detect",
     "test": "node --test test/*.test.ts",
     "typecheck": "tsc --noEmit"
   },

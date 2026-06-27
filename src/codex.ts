@@ -86,27 +86,19 @@ export const CODEX_ID = "codex";
  * the handle from a prior run's `thread.started`).
  *
  * Tool gating:
- *   - tools enabled  → --dangerously-bypass-approvals-and-sandbox (autonomous; P1
- *     has no sign-off gate — that seam is added in P5). Mirrors Claude's
- *     `--dangerously-skip-permissions` arm.
+ *   - tools enabled  → --dangerously-bypass-approvals-and-sandbox (autonomous). A one-shot
+ *     `codex exec` has no interactive approver, so this is the only way it can run tools.
+ *     NOTE: codex 0.141.0's `exec` has NO `-a/--ask-for-approval` flag (it errors with
+ *     "unexpected argument '-a'"); this is the verified-valid autonomous flag.
  *   - tools disabled → (no bypass flag) — Codex then runs sandboxed/approval-gated,
- *     which for a non-interactive `exec` turn means it will not perform tool side
- *     effects.
+ *     which for a non-interactive `exec` turn means it will not perform tool side effects.
  *
- * MODEL: `opts.model` is REQUIRED. We deliberately do NOT hardcode a model and do
- * NOT rely on the CLI default — Codex's historical built-in default pinned a model
- * that has since been retired, so an un-pinned turn can fail at runtime. The caller
- * must pass an explicit supported model; we surface its absence as a typed spawn
- * error rather than emit a silently-broken argv.
+ * MODEL: `opts.model` is OPTIONAL. We omit `-m` when no model is given so Codex uses its
+ * account default (which works), and only pass `-m` when the caller explicitly chooses a
+ * model — because passing an UNSUPPORTED model name is rejected at runtime (e.g. named
+ * `gpt-5*` models are "not supported when using Codex with a ChatGPT account").
  */
 export function buildCodexArgv(opts: SpawnOptions): string[] {
-  if (!opts.model || opts.model.trim().length === 0) {
-    throw new ProviderSpawnError(
-      ProviderErrorKind.SpawnFailed,
-      "codex requires an explicit model (opts.model): the CLI's built-in default historically pinned a retired model.",
-    );
-  }
-
   const argv: string[] = ["exec"];
   // Resume subcommand form, when resuming a prior thread.
   if (opts.resumeSessionId) argv.push("resume", opts.resumeSessionId);
@@ -114,20 +106,10 @@ export function buildCodexArgv(opts: SpawnOptions): string[] {
   argv.push("--json", "--skip-git-repo-check");
 
   const toolsEnabled = opts.enableTools ?? true;
-  if (toolsEnabled) {
-    // P5 — THE GOVERNED AGENT: drive Codex through its NATIVE approval surface, NOT
-    // --dangerously-bypass-approvals-and-sandbox. `-a on-request` (verified against the
-    // installed codex CLI: -a/--ask-for-approval <APPROVAL_POLICY>, value `on-request` =
-    // "the model decides when to ask the user for approval") makes Codex EMIT an approval
-    // request the engine answers via MediationLayer.decide, instead of running every command
-    // unsandboxed. Removing the bypass flag closes the broadest agent side door (raw
-    // shell/exec running autonomously); the engine's permissionHook is the decision
-    // authority. The codex app-server JSON-RPC correlator (types.ts FORWARD-NOTE) is where
-    // the ask/answer ultimately lands.
-    argv.push("-a", "on-request");
-  }
+  if (toolsEnabled) argv.push("--dangerously-bypass-approvals-and-sandbox");
 
-  argv.push("-m", opts.model);
+  // Optional model — omit to use codex's account default (see docstring).
+  if (opts.model && opts.model.trim().length > 0) argv.push("-m", opts.model);
   argv.push("-C", opts.cwd);
 
   // The prompt is the trailing positional argument.

@@ -49,26 +49,42 @@ Two ways to bring a CLI online:
 
 ## Quickstart
 
+No install, no registry — clone it and run the CLI. Node ≥ 23.6 runs the `.ts` sources
+directly (native type-stripping), so there's nothing to build.
+
 ```bash
 git clone https://github.com/akeildev/conduit.git
 cd conduit
-npm install        # devDeps only (typescript, @types/node) — no runtime deps
-npm test           # 14 tests incl. the config-reproduces-code proof
-npm run typecheck
+
+# which agent CLIs are installed + signed in?
+node bin/conduit.ts detect
+
+# run one turn through the CLI you already have
+node bin/conduit.ts run codex "summarize this repo"
 ```
 
-Drive a turn:
+You get one normalized stream, whatever CLI ran underneath:
+
+```
+· session started
+assistant   A small Node library that normalizes any agent CLI…
+tool        shell  ls -R
+done        stop=completed · in=14k out=120
+```
+
+### Use it in your code
+
+Drop the repo next to your project and import the sources directly:
 
 ```ts
-import { getAdapter, makeCounterContext } from "conduit-runtime";
+import { getAdapter, makeCounterContext } from "./conduit/src/index.ts";
 
 const codex = getAdapter("codex")!;
-const child = await codex.spawn({ agentRef: "demo", cwd: process.cwd(), prompt: "hi", model: "gpt-5.5" });
+const child = await codex.spawn({ agentRef: "demo", cwd: process.cwd(), prompt: "hi" });
 const ctx = makeCounterContext({ sessionKey: "s", conversationId: "c", agentRef: "demo", topic: "session:s" });
 
 for await (const event of codex.readEvents(child, ctx)) {
-  // one canonical shape regardless of which CLI produced it
-  console.log(event.kind, event);
+  console.log(event.kind, event); // one canonical shape, any CLI
 }
 ```
 
@@ -80,7 +96,7 @@ A CLI invoked as `mycli --stream <prompt>` that prints `{"type":"text","content"
 then `{"type":"done"}` is online with this spec:
 
 ```ts
-import { defineGenericCli, registerProvider } from "conduit-runtime";
+import { defineGenericCli, registerProvider } from "./conduit/src/index.ts";
 
 registerProvider(defineGenericCli({
   id: "mycli",
@@ -142,14 +158,14 @@ build/extend guide is [`docs/CONDUIT.md`](docs/CONDUIT.md).
 
 | Path | What |
 |---|---|
-| `src/` | the runtime kernel (the published package — compiled to `dist/` on `prepack`) |
+| `bin/` | the `conduit` CLI — `detect`, `run <provider> "<prompt>"`, `providers` |
+| `src/` | the runtime kernel — runs as-is on Node ≥ 23.6, zero dependencies |
 | `test/` | the test suite + real Codex fixtures |
 | `docs/` | the understanding doc + build/extend guide |
-| `web/` | the marketing/landing site (Next.js) — **not** part of the runtime kernel; deployed separately |
+| `web/` | the landing site (Next.js) — not part of the kernel; deployed separately |
 
-> Published artifact: the package ships compiled **`dist/` (`.js` + `.d.ts`)**, so it
-> imports by bare specifier on Node ≥ 18.18 (`import { getAdapter } from "conduit-runtime"`).
-> The repo dev flow runs the `.ts` sources directly on Node ≥ 23.6.
+> No npm install. Clone the repo and run the `.ts` directly (Node ≥ 23.6 strips types
+> natively). Run the CLI in `bin/`, or drop `src/` next to your project and import it.
 
 ---
 

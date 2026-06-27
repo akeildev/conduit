@@ -46,8 +46,8 @@ export default function Home() {
             <span className="pill"><span className="dot" /> Open source · MIT</span>
             <h1 className="h1">Build on the AI subscription<br /><span className="accent">you already pay for.</span></h1>
             <p className="lede">
-              Turn the Claude or Codex CLI on your machine into a backend for your app.
-              No API keys. No token bills.
+              Conduit runs the Claude or Codex CLI on your machine and turns it into one
+              clean event stream. No API keys. No token bills.
             </p>
             <div className="cta-row">
               <a className="btn btn-primary" href={REPO}><GitHubMark /> Get started</a>
@@ -56,16 +56,15 @@ export default function Home() {
             <p className="trust">Claude Code · Codex · any CLI that prints JSON</p>
 
             <div className="code hero-code">
-              <div className="code-bar"><span className="tl" /><span className="tl" /><span className="tl" /><span className="fname">app.ts</span></div>
+              <div className="code-bar"><span className="tl" /><span className="tl" /><span className="tl" /><span className="fname">terminal</span></div>
               <pre>
-{`import { getAdapter } from `}<span className="s">&quot;conduit-runtime&quot;</span>{`;
+{`$ `}<span className="k">node bin/conduit.ts run codex</span>{` `}<span className="s">&quot;summarize this repo&quot;</span>{`
 
-`}<span className="k">const</span>{` codex = getAdapter(`}<span className="s">&quot;codex&quot;</span>{`);
-`}<span className="k">const</span>{` turn  = `}<span className="k">await</span>{` codex.spawn({ prompt: `}<span className="s">&quot;summarize this repo&quot;</span>{` });
-
-`}<span className="k">for await</span>{` (`}<span className="k">const</span>{` event `}<span className="k">of</span>{` codex.readEvents(turn, ctx))
-  console.log(event.kind); `}<span className="c">// assistant_text · tool_call · final_result</span>{`
-`}
+`}<span className="c">· session started</span>{`
+assistant   A small Node library that normalizes any
+            agent CLI into one canonical event stream.
+tool        shell  ls -R
+done        stop=completed · in=14k out=120`}
               </pre>
             </div>
           </div>
@@ -123,20 +122,20 @@ export default function Home() {
             <div className="split-text">
               <span className="eyebrow">Bring your own CLI</span>
               <h2 className="h2">A config file, not a code change.</h2>
-              <p className="lede">If a CLI prints JSON, declare it once — no adapter to write.</p>
+              <p className="lede">If a CLI prints JSON, declare it in a manifest — no adapter to write.</p>
             </div>
             <div className="code">
-              <div className="code-bar"><span className="tl" /><span className="tl" /><span className="tl" /><span className="fname">my-cli.ts</span></div>
+              <div className="code-bar"><span className="tl" /><span className="tl" /><span className="tl" /><span className="fname">conduit.clis.json</span></div>
               <pre>
-{`registerProvider(defineGenericCli({
-  `}<span className="k">id</span>{`: `}<span className="s">&quot;mycli&quot;</span>{`,
-  `}<span className="k">binary</span>{`: `}<span className="s">&quot;mycli&quot;</span>{`,
-  `}<span className="k">argv</span>{`: { prompt: { mode: `}<span className="s">&quot;positional&quot;</span>{` } },
-  `}<span className="k">mapping</span>{`: { rules: [
-    { match: [{ field: `}<span className="s">&quot;type&quot;</span>{`, equals: `}<span className="s">&quot;text&quot;</span>{` }],
-      emit: [{ kind: `}<span className="s">&quot;assistant_text&quot;</span>{` }] },
-  ] },
-}));`}
+{`{
+  `}<span className="k">&quot;id&quot;</span>{`: `}<span className="s">&quot;mycli&quot;</span>{`,
+  `}<span className="k">&quot;binary&quot;</span>{`: `}<span className="s">&quot;mycli&quot;</span>{`,
+  `}<span className="k">&quot;argv&quot;</span>{`: { &quot;prompt&quot;: { &quot;mode&quot;: `}<span className="s">&quot;positional&quot;</span>{` } },
+  `}<span className="k">&quot;mapping&quot;</span>{`: { &quot;rules&quot;: [
+    { &quot;match&quot;: [{ &quot;field&quot;: `}<span className="s">&quot;type&quot;</span>{`, &quot;equals&quot;: `}<span className="s">&quot;text&quot;</span>{` }],
+      &quot;emit&quot;: [{ &quot;kind&quot;: `}<span className="s">&quot;assistant_text&quot;</span>{` }] }
+  ] }
+}`}
               </pre>
             </div>
           </div>
@@ -145,10 +144,12 @@ export default function Home() {
         {/* Get started */}
         <section className="section bordered get">
           <div className="wrap">
-            <h2 className="h2">Up in a minute.</h2>
+            <h2 className="h2">Clone it. Run it.</h2>
             <div className="install">
-              <div className="row"><span className="pfx">$</span><span className="cmd">npm install conduit-runtime</span></div>
+              <div className="row"><span className="pfx">$</span><span className="cmd">git clone https://github.com/akeildev/conduit</span></div>
+              <div className="row"><span className="pfx">$</span><span className="cmd">cd conduit &amp;&amp; node bin/conduit.ts detect</span></div>
             </div>
+            <p className="trust">Runs on Node ≥ 23.6 — no build, no install, zero dependencies.</p>
             <div className="cta-row">
               <a className="btn btn-primary" href={REPO}><GitHubMark /> Star on GitHub</a>
               <a className="btn btn-ghost" href={DOCS}>Read the docs</a>
