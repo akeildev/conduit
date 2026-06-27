@@ -34,7 +34,7 @@ export const codexCompatibleSpec: GenericCliSpec = {
     resume: { subcommand: ["resume"] },
     model: { flag: "-m", required: true },
     cwd: { flag: "-C" },
-    toolsEnabled: ["--dangerously-bypass-approvals-and-sandbox"],
+    toolsEnabled: ["-s", "workspace-write"],
     prompt: { mode: "positional" },
   },
   errorRules: [

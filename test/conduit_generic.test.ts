@@ -110,7 +110,7 @@ function spawnOpts(over: Partial<SpawnOptions> = {}): SpawnOptions {
 
 test("buildGenericArgv mirrors the codex exec recipe", () => {
   assert.deepEqual(buildGenericArgv(codexCompatibleSpec, spawnOpts()), [
-    "exec", "--json", "--skip-git-repo-check", "--dangerously-bypass-approvals-and-sandbox", "-m", "gpt-5.5", "-C", "/work", "hello",
+    "exec", "--json", "--skip-git-repo-check", "-s", "workspace-write", "-m", "gpt-5.5", "-C", "/work", "hello",
   ]);
 });
 
@@ -120,7 +120,7 @@ test("buildGenericArgv places the resume subcommand right after the leading subc
 });
 
 test("buildGenericArgv omits the tools arm when tools are disabled", () => {
-  assert.ok(!buildGenericArgv(codexCompatibleSpec, spawnOpts({ enableTools: false })).includes("--dangerously-bypass-approvals-and-sandbox"));
+  assert.ok(!buildGenericArgv(codexCompatibleSpec, spawnOpts({ enableTools: false })).includes("-s"));
 });
 
 test("a required-model spec throws a typed SpawnFailed when no model is given", () => {

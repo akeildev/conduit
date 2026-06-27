@@ -85,13 +85,13 @@ export const CODEX_ID = "codex";
  * `codex exec resume <thread_id> --json --skip-git-repo-check` (the thread_id is
  * the handle from a prior run's `thread.started`).
  *
- * Tool gating:
- *   - tools enabled  → --dangerously-bypass-approvals-and-sandbox (autonomous). A one-shot
- *     `codex exec` has no interactive approver, so this is the only way it can run tools.
- *     NOTE: codex 0.141.0's `exec` has NO `-a/--ask-for-approval` flag (it errors with
- *     "unexpected argument '-a'"); this is the verified-valid autonomous flag.
- *   - tools disabled → (no bypass flag) — Codex then runs sandboxed/approval-gated,
- *     which for a non-interactive `exec` turn means it will not perform tool side effects.
+ * Tool gating (codex 0.141.0's `exec` has NO `-a/--ask-for-approval` — it errors
+ * "unexpected argument '-a'". Its real knob is `-s`):
+ *   - tools enabled  → -s workspace-write. Codex runs SANDBOXED to the workspace: it can
+ *     read + write inside `cwd` but can't autonomously touch the broader system. A safe
+ *     default for running another agent's output. (We deliberately do NOT use
+ *     --dangerously-bypass-approvals-and-sandbox, which removes the sandbox entirely.)
+ *   - tools disabled → -s read-only (pure conversation; no tool side effects).
  *
  * MODEL: `opts.model` is OPTIONAL. We omit `-m` when no model is given so Codex uses its
  * account default (which works), and only pass `-m` when the caller explicitly chooses a
@@ -105,8 +105,10 @@ export function buildCodexArgv(opts: SpawnOptions): string[] {
 
   argv.push("--json", "--skip-git-repo-check");
 
+  // Sandbox policy IS the gating knob on `codex exec` (no `-a` here): write-in-workspace
+  // when tools are enabled, read-only for pure conversation.
   const toolsEnabled = opts.enableTools ?? true;
-  if (toolsEnabled) argv.push("--dangerously-bypass-approvals-and-sandbox");
+  argv.push("-s", toolsEnabled ? "workspace-write" : "read-only");
 
   // Optional model — omit to use codex's account default (see docstring).
   if (opts.model && opts.model.trim().length > 0) argv.push("-m", opts.model);
