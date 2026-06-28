@@ -32,6 +32,20 @@ const HOST = process.env.CONDUIT_HOST ?? "127.0.0.1";
 const PORT = Number(process.env.CONDUIT_PORT ?? 8787);
 const TOKEN = process.env.CONDUIT_TOKEN; // optional shared secret; off by default for local dev
 const ORIGIN = process.env.CONDUIT_ORIGIN ?? "*"; // CORS allow-origin for browser apps
+const DEFAULT_PROVIDER = process.env.CONDUIT_DEFAULT_PROVIDER; // pin a default; else first signed-in
+
+/**
+ * Resolve the provider to use when a /run request omits one. Precedence:
+ *   1. CONDUIT_DEFAULT_PROVIDER (if that CLI is installed)
+ *   2. the first detected CLI that is signed in (registration order: claude, then codex)
+ *   3. the first installed CLI (so the error message is about auth, not "no provider")
+ * Returns undefined only if no agent CLI is installed at all.
+ */
+async function resolveDefaultProvider(): Promise<string | undefined> {
+  const found = await detectAgents();
+  if (DEFAULT_PROVIDER && found.some((a) => a.id === DEFAULT_PROVIDER && a.found)) return DEFAULT_PROVIDER;
+  return found.find((a) => a.found && a.authenticated)?.id ?? found.find((a) => a.found)?.id;
+}
 
 function cors(res: ServerResponse): void {
   res.setHeader("Access-Control-Allow-Origin", ORIGIN);
@@ -70,14 +84,17 @@ async function readBody(req: IncomingMessage): Promise<Record<string, unknown>> 
 /** Stream one Conduit turn to the client as Server-Sent Events. */
 async function handleRun(req: IncomingMessage, res: ServerResponse): Promise<void> {
   const body = await readBody(req);
-  const provider = typeof body.provider === "string" ? body.provider : "";
   const prompt = typeof body.prompt === "string" ? body.prompt : "";
   const model = typeof body.model === "string" && body.model.trim() ? body.model : undefined;
   const cwd = typeof body.cwd === "string" && body.cwd.trim() ? body.cwd : process.cwd();
   const enableTools = typeof body.enableTools === "boolean" ? body.enableTools : undefined;
 
-  if (!provider) return json(res, 400, { error: 'missing "provider" (e.g. "codex")' });
   if (!prompt) return json(res, 400, { error: 'missing "prompt"' });
+  // provider is optional — default to whichever CLI the user is signed into.
+  const provider = (typeof body.provider === "string" && body.provider.trim())
+    ? body.provider
+    : await resolveDefaultProvider();
+  if (!provider) return json(res, 404, { error: "no agent CLI installed. Install codex or claude, or GET /detect." });
   const adapter = getAdapter(provider);
   if (!adapter) return json(res, 404, { error: `unknown provider "${provider}". GET /detect to list installed CLIs.` });
 
@@ -128,7 +145,12 @@ const server = createServer(async (req, res) => {
   try {
     if (req.method === "GET" && url.pathname === "/health") {
       const found = await detectAgents();
-      return json(res, 200, { ok: true, providers: found.map((a) => a.id) });
+      return json(res, 200, {
+        ok: true,
+        providers: found.map((a) => a.id),
+        ready: found.filter((a) => a.found && a.authenticated).map((a) => a.id),
+        default: await resolveDefaultProvider(),
+      });
     }
     if (req.method === "GET" && url.pathname === "/detect") {
       return json(res, 200, await detectAgents());

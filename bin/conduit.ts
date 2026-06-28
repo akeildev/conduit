@@ -101,7 +101,7 @@ async function main(): Promise<number> {
   switch (cmd) {
     case "detect": await cmdDetect(); return 0;
     case "providers":
-      console.log("Built-in: codex (hand-written). Add any JSONL CLI via a conduit manifest — see docs/CONDUIT.md.");
+      console.log("Built-in: claude, codex (both hand-written). Add any JSONL CLI via a conduit manifest — see docs/CONDUIT.md.");
       return 0;
     case "run": return cmdRun(rest);
     case undefined:

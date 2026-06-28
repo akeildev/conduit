@@ -9,10 +9,11 @@
  */
 
 import { codexAdapter } from "./codex.ts";
+import { claudeAdapter } from "./claude.ts";
 import type { DetectResult, ProviderAdapter } from "./types.ts";
 
 /** The built-in, hand-written provider adapters shipped with Conduit. */
-export const ADAPTERS: readonly ProviderAdapter[] = [codexAdapter];
+export const ADAPTERS: readonly ProviderAdapter[] = [claudeAdapter, codexAdapter];
 
 /** Runtime-registered providers (generic/config-driven or host-supplied). */
 const registered: ProviderAdapter[] = [];

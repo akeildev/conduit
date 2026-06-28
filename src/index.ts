@@ -79,3 +79,16 @@ export {
   resolveCodexBinary,
   classifyCodexError,
 } from "./codex.ts";
+
+// The hand-written Claude Code adapter (content-block fan-out needs real code, not config).
+export {
+  CLAUDE_ID,
+  claudeAdapter,
+  parseClaude,
+  spawnClaude,
+  buildClaudeArgv,
+  detectClaude,
+  probeClaudeAuth,
+  resolveClaudeBinary,
+  classifyClaudeError,
+} from "./claude.ts";

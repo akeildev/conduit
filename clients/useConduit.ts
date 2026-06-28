@@ -26,7 +26,8 @@ export interface ConduitEvent {
 }
 
 export interface UseConduitOptions {
-  provider: string;
+  /** Provider id (e.g. "claude" / "codex"). Omit to use the gateway's default (first signed-in CLI). */
+  provider?: string;
   baseUrl?: string;
   model?: string;
   cwd?: string;

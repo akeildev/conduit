@@ -26,7 +26,7 @@ export async function conduitDetect({ baseUrl = "http://127.0.0.1:8787", token }
  * Run one turn and stream canonical events to `onEvent`.
  *
  * @param {object}   opts
- * @param {string}   opts.provider      e.g. "codex" / "claude"
+ * @param {string}  [opts.provider]     e.g. "claude" / "codex"; omit to use the gateway default
  * @param {string}   opts.prompt        the user's prompt for this turn
  * @param {string}  [opts.baseUrl]      gateway URL (default http://127.0.0.1:8787)
  * @param {string}  [opts.model]        model override (some CLIs require one)

@@ -20,12 +20,21 @@ Requires Node ≥ 23.6 (runs the `.ts` sources directly via native type-strippin
 
 Env:
 
-| var               | default            | meaning                                        |
-| ----------------- | ------------------ | ---------------------------------------------- |
-| `CONDUIT_PORT`    | `8787`             | listen port                                    |
-| `CONDUIT_HOST`    | `127.0.0.1`        | bind address (loopback by design)              |
-| `CONDUIT_TOKEN`   | _(off)_            | require `Authorization: Bearer <token>`        |
-| `CONDUIT_ORIGIN`  | `*`                | CORS allow-origin for browser apps             |
+| var                         | default     | meaning                                              |
+| --------------------------- | ----------- | ---------------------------------------------------- |
+| `CONDUIT_PORT`              | `8787`      | listen port                                          |
+| `CONDUIT_HOST`             | `127.0.0.1` | bind address (loopback by design)                    |
+| `CONDUIT_TOKEN`            | _(off)_     | require `Authorization: Bearer <token>`              |
+| `CONDUIT_ORIGIN`           | `*`         | CORS allow-origin for browser apps                   |
+| `CONDUIT_DEFAULT_PROVIDER` | _(auto)_    | pin the default provider; else first signed-in CLI   |
+
+## Providers
+
+Two built-in adapters ship: **`claude`** and **`codex`** (both hand-written). Add any other
+JSONL CLI by config — see [bringing your own CLI](CONDUIT.md). When a `/run` call omits
+`provider`, the gateway picks the **default**: `CONDUIT_DEFAULT_PROVIDER` if set, else the
+first signed-in CLI in precedence order `claude` → `codex`. `GET /health` reports the
+resolved `default` and the `ready` list.
 
 ## Endpoints
 

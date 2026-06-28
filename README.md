@@ -103,13 +103,15 @@ node bin/conduit-serve.ts            # → http://127.0.0.1:8787
 import { conduitRun } from "./conduit/clients/conduit-client.js";
 
 await conduitRun({
-  provider: "codex",
+  // provider omitted → the gateway uses whichever CLI you're signed into
+  // (precedence claude → codex; pin with CONDUIT_DEFAULT_PROVIDER or pass provider).
   prompt: "summarize this repo",
   onEvent: (e) => { if (e.kind === "assistant_text") append(e.text); },
 });
 ```
 
-`GET /detect` lists installed CLIs; `POST /run` streams canonical events as SSE. React hook
+Two built-in providers — **`claude`** and **`codex`**. `GET /detect` lists installed CLIs;
+`GET /health` reports the resolved default; `POST /run` streams canonical events as SSE. React hook
 (`clients/useConduit.ts`) and a Next.js auth'd proxy route (`clients/next-route.ts`) included.
 Full contract: [`docs/GATEWAY.md`](docs/GATEWAY.md).
 
@@ -176,6 +178,8 @@ build/extend guide is [`docs/CONDUIT.md`](docs/CONDUIT.md).
 | Config-driven adapter | [`src/generic.ts`](src/generic.ts) |
 | Manifest loader | [`src/manifest.ts`](src/manifest.ts) |
 | Hand-written Codex adapter | [`src/codex.ts`](src/codex.ts) |
+| Hand-written Claude adapter | [`src/claude.ts`](src/claude.ts) |
+| Local API gateway (HTTP+SSE) | [`bin/conduit-serve.ts`](bin/conduit-serve.ts) |
 
 ---
 
