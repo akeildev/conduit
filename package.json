@@ -18,13 +18,15 @@
     "node": ">=23.6.0"
   },
   "bin": {
-    "conduit": "./bin/conduit.ts"
+    "conduit": "./bin/conduit.ts",
+    "conduit-serve": "./bin/conduit-serve.ts"
   },
   "exports": {
     ".": "./src/index.ts"
   },
   "scripts": {
     "conduit": "node bin/conduit.ts",
+    "serve": "node bin/conduit-serve.ts",
     "detect": "node bin/conduit.ts detect",
     "test": "node --test test/*.test.ts",
     "typecheck": "tsc --noEmit"

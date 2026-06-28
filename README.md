@@ -90,6 +90,31 @@ for await (const event of codex.readEvents(child, ctx)) {
 
 ---
 
+## Use it as a local API — power any app's AI feature
+
+Run the gateway and Conduit becomes an HTTP endpoint any app can call — no API keys, no
+per-token billing, your subscription is the backend:
+
+```bash
+node bin/conduit-serve.ts            # → http://127.0.0.1:8787
+```
+
+```js
+import { conduitRun } from "./conduit/clients/conduit-client.js";
+
+await conduitRun({
+  provider: "codex",
+  prompt: "summarize this repo",
+  onEvent: (e) => { if (e.kind === "assistant_text") append(e.text); },
+});
+```
+
+`GET /detect` lists installed CLIs; `POST /run` streams canonical events as SSE. React hook
+(`clients/useConduit.ts`) and a Next.js auth'd proxy route (`clients/next-route.ts`) included.
+Full contract: [`docs/GATEWAY.md`](docs/GATEWAY.md).
+
+---
+
 ## Bring your own CLI — by config, not code
 
 A CLI invoked as `mycli --stream <prompt>` that prints `{"type":"text","content":"…"}`
@@ -158,8 +183,9 @@ build/extend guide is [`docs/CONDUIT.md`](docs/CONDUIT.md).
 
 | Path | What |
 |---|---|
-| `bin/` | the `conduit` CLI — `detect`, `run <provider> "<prompt>"`, `providers` |
+| `bin/` | the `conduit` CLI (`detect` / `run` / `providers`) + `conduit-serve` (the HTTP+SSE gateway) |
 | `src/` | the runtime kernel — runs as-is on Node ≥ 23.6, zero dependencies |
+| `clients/` | drop-in callers for the gateway — browser/Node client, React hook, Next.js route |
 | `test/` | the test suite + real Codex fixtures |
 | `docs/` | the understanding doc + build/extend guide |
 | `web/` | the landing site (Next.js) — not part of the kernel; deployed separately |
